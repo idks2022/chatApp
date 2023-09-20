@@ -14,7 +14,7 @@ const getUsers = async (req, res) => {
 
   try {
     const users = await userBLL.getUsers(query);
-    res.json(users);
+    res.status(200).json(users);
   } catch (error) {
     console.log(error);
   }
@@ -23,21 +23,16 @@ const getUsers = async (req, res) => {
 //create new user
 const createUser = async (req, res) => {
   const user = req.body;
-  const { email } = req.body;
-
   try {
-    //check this email doesn't already exists
-    const userExists = await userBLL.getUsers({ email });
-    if (userExists.length > 1) {
-      res.status(400);
-      throw new Error("Email is already in use");
-      return;
-    }
-
     const newUser = await userBLL.createUser(user);
     res.status(201).json(newUser);
   } catch (error) {
-    console.log(error);
+    if (error.code === 11000) {
+      res.status(400).json({ message: "Email is already in use" });
+    } else {
+      console.log(error);
+      res.status(500).json({ message: "Server Error" });
+    }
   }
 };
 
@@ -46,7 +41,7 @@ const updateUser = async (req, res) => {
   const { id, changes } = req.body;
   try {
     const updatedUser = await userBLL.updateUser(id, changes);
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.log(error);
   }
@@ -63,4 +58,15 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, createUser, updateUser, deleteUser };
+//authenticate user
+const authUser = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const verifiedUser = await userBLL.authUser(email, password);
+    res.status(200).json(verifiedUser);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { getUsers, createUser, updateUser, deleteUser, authUser };

@@ -1,4 +1,5 @@
 //userBLL.js
+const genereateToken = require("../config/JWT");
 const User = require("../models/userModel");
 
 //CRUD operations:
@@ -6,6 +7,11 @@ const User = require("../models/userModel");
 const getUsers = async (query) => {
   const users = await User.find(query);
   return users;
+};
+
+const getUser = async (query) => {
+  const user = await User.findOne(query);
+  return user;
 };
 
 const createUser = async (userData) => {
@@ -23,4 +29,29 @@ const deleteUser = async (id) => {
   return deletedUser;
 };
 
-module.exports = { getUsers, createUser, updateUser, deleteUser };
+const authUser = async (email, password) => {
+  //check this user exists
+  const user = await getUser({ email });
+
+  //if so, validate password
+  if (user && (await User.isValidPassword(password))) {
+    return {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      pic: user.pic,
+      accessToken: genereateToken(user._id),
+    };
+  } else {
+    throw new Error("Invalid email or password");
+  }
+};
+
+module.exports = {
+  getUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
+  authUser,
+};
