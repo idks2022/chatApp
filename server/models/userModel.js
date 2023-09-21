@@ -40,8 +40,8 @@ userSchema.pre("save", function (next) {
 
 // validate password on sign-in
 userSchema.methods.isValidPassword = function (password) {
-  console.log("validatepassword");
-  return bcrypt.compareSync(password, this.password);
+  const result = bcrypt.compareSync(password, this.password);
+  return result;
 };
 
 const User = mongoose.model("User", userSchema);

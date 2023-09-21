@@ -2,8 +2,7 @@ import { useState } from "react";
 import SignIn from "../components/SignIn";
 import SignUp from "../components/SignUp";
 import { ButtonGroup, Button } from "@mui/material";
-import { Typography } from "@mui/material";
-import { Box } from "@mui/material";
+
 const Homepage = () => {
   const [selection, setSelection] = useState("signIn");
   return (

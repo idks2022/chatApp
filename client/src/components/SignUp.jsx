@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Stack, TextField, Button, Snackbar, Alert } from "@mui/material";
 import axios from "axios";
 
-const Register = () => {
+const SignUp = () => {
   const {
     register,
     handleSubmit,
@@ -28,12 +28,11 @@ const Register = () => {
     } catch (error) {
       setSignedUp(false);
       if (error.response) {
-        // Print the error message from the server
         console.log(error.response.data.message);
         setError(error.response.data.message);
       } else {
-        // Print generic error message
         console.log(error.message);
+        setError(`Request Error: ${error.message}`);
       }
     }
   };
@@ -97,4 +96,4 @@ const Register = () => {
     </>
   );
 };
-export default Register;
+export default SignUp;

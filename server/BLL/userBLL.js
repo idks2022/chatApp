@@ -34,7 +34,7 @@ const authUser = async (email, password) => {
   const user = await getUser({ email });
 
   //if so, validate password
-  if (user && (await User.isValidPassword(password))) {
+  if (user && (await user.isValidPassword(password))) {
     return {
       _id: user._id,
       name: user.name,
