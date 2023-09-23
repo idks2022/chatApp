@@ -3,7 +3,7 @@ const userBLL = require("../BLL/userBLL");
 
 //get user(s) by searching ".../users?search='query'"
 const getUsers = async (req, res) => {
-  const query = req.query.search
+  let query = req.query.search
     ? {
         $or: [
           { name: { $regex: req.query.search, $options: "i" } },
@@ -11,6 +11,8 @@ const getUsers = async (req, res) => {
         ],
       }
     : {};
+
+  query = { ...query, _id: { $ne: req.user.id } };
 
   try {
     const users = await userBLL.getUsers(query);

@@ -1,4 +1,5 @@
 //userRoutes.js
+const authMiddleware = require("../middlewares/authMiddleware");
 const express = require("express");
 const {
   getUsers,
@@ -9,7 +10,7 @@ const {
 } = require("../controllers/userController");
 const router = express.Router();
 
-router.route("/").get(getUsers); //get user(s) by searching ".../users?search='query'"
+router.route("/").get(authMiddleware, getUsers); //get user(s) by searching ".../users?search='query'"
 router.route("/").post(createUser); //create new user
 router.route("/").patch(updateUser); //update user
 router.route("/").delete(deleteUser); //delete user

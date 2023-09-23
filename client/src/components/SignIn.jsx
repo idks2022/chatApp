@@ -26,7 +26,6 @@ const SignIn = () => {
           },
         }
       );
-      console.log(data);
       sessionStorage.setItem("userInfo", JSON.stringify(data));
     } catch (error) {
       if (error.response) {
