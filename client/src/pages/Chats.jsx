@@ -1,11 +1,9 @@
-import { useState } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+import { Tabs, Tab, Container } from "@mui/material";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import ChatIcon from "@mui/icons-material/Chat";
-import { Container } from "@mui/material";
-import { Users } from "../components/Users";
-import { UserChats } from "../components/UserChats";
+import { useState } from "react";
+import Users from "../components/Users";
+import UserChats from "../components/UserChats";
 
 const Chats = () => {
   const [selection, setSelection] = useState("myChats");

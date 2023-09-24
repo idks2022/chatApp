@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Stack, TextField, Button, Snackbar, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Stack, TextField, Button, Snackbar, Alert } from "@mui/material";
 
 const SignIn = () => {
   const {
@@ -9,6 +10,7 @@ const SignIn = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
+  const navigate = useNavigate();
 
   const [error, setError] = useState("");
 
@@ -27,6 +29,7 @@ const SignIn = () => {
         }
       );
       sessionStorage.setItem("userInfo", JSON.stringify(data));
+      navigate("/chats");
     } catch (error) {
       if (error.response) {
         console.log(error.response.data.message);
