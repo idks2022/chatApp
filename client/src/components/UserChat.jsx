@@ -8,7 +8,7 @@ const UserChat = ({ chat, otherUser }) => {
       </ListItemAvatar>
       <ListItemText
         primary={otherUser.name}
-        secondary={chat.latestMessage || "Last message..."}
+        secondary={chat.latestMessage?.content || "Last message..."}
       />
     </ListItem>
   );

@@ -4,8 +4,9 @@ const Chat = require("../models/chatModel");
 //get multiple chats
 const getChats = async (query) => {
   let chats = await Chat.find(query)
+    .select("-createdAt -updatedAt -__v")
     .populate("users", "name email pic _id")
-    .populate("latestMessage");
+    .populate("latestMessage", "_id sender content createdAt");
 
   chats = await Chat.populate(chats, {
     path: "latestMessage.sender",
@@ -18,8 +19,9 @@ const getChats = async (query) => {
 //get single chat
 const getChat = async (query) => {
   let chat = await Chat.findOne(query)
+    .select("-createdAt -updatedAt -__v")
     .populate("users", "name email pic _id")
-    .populate("latestMessage");
+    .populate("latestMessage", "_id sender content createdAt");
 
   chat = await Chat.populate(chat, {
     path: "latestMessage.sender",
