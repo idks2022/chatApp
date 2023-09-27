@@ -2,7 +2,7 @@ import { ListItem, ListItemAvatar, ListItemText, Avatar } from "@mui/material";
 
 const User = ({ user }) => {
   return (
-    <ListItem button>
+    <ListItem sx={{ margin: 0, padding: 0 }}>
       <ListItemAvatar>
         <Avatar alt="Profile Picture" src={user.pic} />
       </ListItemAvatar>
