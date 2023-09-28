@@ -28,7 +28,7 @@ const UserChats = ({ onChatSelect }) => {
               button
               key={chat._id}
               sx={{ padding: 0, margin: 0 }}
-              onClick={() => onChatSelect(chat._id)}
+              onClick={() => onChatSelect(chat)}
             >
               <UserChat chat={chat} otherUser={otherUser} />
             </ListItem>

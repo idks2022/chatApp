@@ -22,7 +22,8 @@ const Users = ({ onChatSelect }) => {
           },
         }
       );
-      onChatSelect(chat._id);
+      console.log(chat);
+      onChatSelect(chat);
     } catch (error) {
       console.log(error);
     }

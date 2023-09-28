@@ -1,10 +1,15 @@
-import { Grid, TextField, Button } from "@mui/material";
+import { Grid, TextField, Button, Box } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
 const MessageInput = () => {
   return (
-    <>
-      <Grid container direction="row" alignItems="center">
+    <Box sx={{ width: "100%" }}>
+      <Grid
+        container
+        direction="row"
+        alignItems="center"
+        sx={{ width: "100%" }}
+      >
         <Grid item xs={10}>
           <TextField
             fullWidth
@@ -30,7 +35,7 @@ const MessageInput = () => {
           ></Button>
         </Grid>
       </Grid>
-    </>
+    </Box>
   );
 };
 

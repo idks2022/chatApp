@@ -5,12 +5,12 @@ import ContactsIcon from "@mui/icons-material/Contacts";
 import ChatTabs from "../components/Chats/ChatTabs/ChatTabs";
 import ChatWindow from "../components/Chats/ChatWindow/ChatWindow";
 
-const drawerWidth = 300;
+const drawerWidth = 260;
 
 function Chats(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState(); //receives the selected chat object
 
   const handleSelectedChat = (chat) => {
     setSelectedChat(chat);
@@ -33,7 +33,7 @@ function Chats(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", width: "100%" }}>
       <CssBaseline />
 
       {/* Chats Tabs */}
@@ -79,14 +79,14 @@ function Chats(props) {
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
-          p: 0,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          height: "100vh", // set height to 100% of the viewport height
+          flexGrow: 0,
+          width: { xs: "100%", sm: `calc(100% - ${drawerWidth}px)` },
+          height: "100vh",
           overflow: "hidden", // to ensure it's non-scrollable
         }}
       >
         <ChatWindow selectedChat={selectedChat} />
+
         <Fab
           color="primary"
           aria-label="toggle"
@@ -101,6 +101,9 @@ function Chats(props) {
           <ContactsIcon />
         </Fab>
       </Box>
+      {/*       <Box>
+        <h1>dslmdlsmdlsmdlsmdlsmds</h1>
+      </Box> */}
     </Box>
   );
 }

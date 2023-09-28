@@ -7,6 +7,7 @@ const useFetch = (url) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!url) return;
     const { accessToken } = JSON.parse(sessionStorage.getItem("userInfo"));
 
     const fetchData = async () => {
@@ -18,10 +19,12 @@ const useFetch = (url) => {
         });
         setData(response.data);
         setLoading(false);
-        console.log(response.data);
+        setError(null);
       } catch (error) {
+        setData(null);
         setError(error.message);
         setLoading(false);
+        console.log(error.message);
       }
     };
 
