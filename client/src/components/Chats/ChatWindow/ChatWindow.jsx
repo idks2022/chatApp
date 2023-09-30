@@ -8,6 +8,7 @@ const ChatWindow = ({ selectedChat }) => {
   const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
   const [url, setUrl] = useState(null);
   let { data, loading, error } = useFetch(url);
+  console.log("ChatWindow:", data);
 
   useEffect(() => {
     if (selectedChat) {
@@ -52,7 +53,7 @@ const ChatWindow = ({ selectedChat }) => {
 
       {/* Message Input */}
       <Box sx={{ height: "50px" }}>
-        <MessageInput />
+        <MessageInput chatId={selectedChat._id} />
       </Box>
     </Box>
   );

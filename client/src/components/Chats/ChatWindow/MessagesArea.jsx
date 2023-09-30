@@ -2,7 +2,6 @@ import Message from "./Message";
 import { Box } from "@mui/material";
 
 const MessagesArea = ({ messages, thisUser }) => {
-  console.log("messages", messages);
   return (
     <Box sx={{ width: "100%" }}>
       {messages &&

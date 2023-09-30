@@ -1,7 +1,18 @@
 import { Grid, TextField, Button, Box } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import { useState } from "react";
+import useSendMsg from "../../../hooks/useSendMsg";
 
-const MessageInput = () => {
+const MessageInput = ({ chatId }) => {
+  const [message, setMessage] = useState("");
+  const { sendMessage, loading, error } = useSendMsg();
+
+  const handleSubmit = () => {
+    console.log("handlesubmit", message);
+    sendMessage(chatId, message);
+    setMessage("");
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
       <Grid
@@ -18,6 +29,10 @@ const MessageInput = () => {
             variant="outlined"
             placeholder="Type a message..."
             style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+            value={message}
+            onChange={(e) => {
+              setMessage(e.target.value);
+            }}
           />
         </Grid>
 
@@ -32,6 +47,8 @@ const MessageInput = () => {
               borderBottomLeftRadius: 0,
               height: "40px",
             }}
+            disabled={loading || !message}
+            onClick={handleSubmit}
           ></Button>
         </Grid>
       </Grid>

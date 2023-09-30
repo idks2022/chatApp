@@ -7,6 +7,7 @@ const UserChats = ({ onChatSelect }) => {
   const apiRoute = "http://localhost:3000/chats";
   const { data: userChats, loading, error } = useFetch(apiRoute);
   const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
+  console.log("UserChats:", userChats);
 
   if (loading)
     return (

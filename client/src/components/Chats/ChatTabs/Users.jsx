@@ -7,6 +7,7 @@ import UserSkeleton from "./UserSkeleton";
 const Users = ({ onChatSelect }) => {
   const usersApiRoute = "http://localhost:3000/users";
   const { data: users, loading, error } = useFetch(usersApiRoute);
+  console.log("Users:", users);
 
   const handleUserSelection = async (userId) => {
     const { accessToken } = JSON.parse(sessionStorage.getItem("userInfo"));
