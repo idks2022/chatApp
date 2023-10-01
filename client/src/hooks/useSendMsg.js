@@ -6,22 +6,15 @@ const useSendMsg = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const sendMessage = async (chatId, msgContent) => {
+  const sendMessage = async (requestBody) => {
     const { accessToken } = JSON.parse(sessionStorage.getItem("userInfo"));
     setLoading(true);
     try {
-      const { data: sentMsg } = await axios.post(
-        messageApiRoute,
-        {
-          content: msgContent,
-          chatId: chatId,
+      const { data: sentMsg } = await axios.post(messageApiRoute, requestBody, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      });
       console.log("message:", sentMsg);
       setLoading(false);
       setError("");

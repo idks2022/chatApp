@@ -1,21 +1,67 @@
+// ChatWindow.jsx
 import MessagesArea from "./MessagesArea";
 import MessageInput from "./MessageInput";
 import { Box, AppBar, Toolbar } from "@mui/material";
 import useFetch from "../../../hooks/useFetch";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+
+import { io } from "socket.io-client";
+
+const ENDPOINT = "http://localhost:3000";
 
 const ChatWindow = ({ selectedChat }) => {
   const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
-  const [url, setUrl] = useState(null);
+
+  const [messages, setMessages] = useState(null); //gets value from useFetch
+  const [url, setUrl] = useState(null); //gets value from useEffect
+
   let { data, loading, error } = useFetch(url);
-  console.log("ChatWindow:", data);
+
+  const socketRef = useRef(null);
+
+  useEffect(() => {
+    if (!socketRef.current) {
+      socketRef.current = io(ENDPOINT);
+
+      //Listen to socket connection
+      socketRef.current.on("connect", () => {
+        console.log("connected with socket id: ", socketRef.current.id);
+      });
+
+      //emit setup even
+      socketRef.current.emit("setup", thisUser);
+    }
+  }, [thisUser]);
+
+  useEffect(() => {
+    if (data) {
+      setMessages(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (selectedChat) {
       const getMessagesApiRoute = `http://localhost:3000/messages/${selectedChat._id}`;
-      setUrl(getMessagesApiRoute);
+      setUrl(getMessagesApiRoute); //activate useFetch
+
+      //join chat
+      socketRef.current.emit("join chat", selectedChat._id);
+
+      //listen for new message
+      socketRef.current.on("message received", (newMessage) => {
+        console.log("message received: ", newMessage);
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      });
     }
   }, [selectedChat]);
+
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on("chat connected", (chatId) => {
+        console.log("chat connected: ", chatId);
+      });
+    }
+  });
 
   if (!selectedChat) {
     return <h3>Select a Chat</h3>;
@@ -48,7 +94,7 @@ const ChatWindow = ({ selectedChat }) => {
           wordWrap: "break-word",
         }}
       >
-        <MessagesArea messages={data} thisUser={thisUser} />
+        <MessagesArea messages={messages} thisUser={thisUser} />
       </Box>
 
       {/* Message Input */}

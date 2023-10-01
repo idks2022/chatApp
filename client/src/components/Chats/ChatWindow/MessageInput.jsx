@@ -1,15 +1,25 @@
+//MessageInput.jsx
 import { Grid, TextField, Button, Box } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { useState } from "react";
 import useSendMsg from "../../../hooks/useSendMsg";
 
-const MessageInput = ({ chatId }) => {
+const MessageInput = ({ chatId, socket }) => {
   const [message, setMessage] = useState("");
   const { sendMessage, loading, error } = useSendMsg();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("handlesubmit", message);
-    sendMessage(chatId, message);
+    const requestBody = {
+      chatId: chatId,
+      content: message,
+    };
+    const newMessage = await sendMessage(requestBody);
+    if (error) {
+      console.log(error);
+      return;
+    }
+
     setMessage("");
   };
 

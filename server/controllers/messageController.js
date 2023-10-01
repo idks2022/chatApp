@@ -37,7 +37,17 @@ const createMessage = async (req, res) => {
 
   try {
     const newMessage = await messageBLL.createMessage(newMessageData);
-    await chatBLL.updateChat(chatId, { latestMessage: newMessage._id });
+    await chatBLL.updateChat(chatId, {
+      latestMessage: newMessage._id,
+    });
+
+    const chat = newMessage.chat;
+    if (!chat || !chat.users)
+      return res.status(400).json({ message: "Chat / chat.users not found" });
+
+    // Emit the new message to the chat's room
+    req.app.io.to(chatId).emit("message received", newMessage);
+
     return res.status(201).json(newMessage);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
