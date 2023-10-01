@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Box, CssBaseline, Drawer, Fab } from "@mui/material";
 import ContactsIcon from "@mui/icons-material/Contacts";
 
@@ -12,9 +12,9 @@ function Chats(props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(); //receives the selected chat object
 
-  const handleSelectedChat = (chat) => {
+  const handleSelectedChat = useCallback((chat) => {
     setSelectedChat(chat);
-  };
+  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

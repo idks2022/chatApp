@@ -1,11 +1,14 @@
-import { Tabs, Tab, Container } from "@mui/material";
-import AddCommentIcon from "@mui/icons-material/AddComment";
+import { Tabs, Tab, Container, Box, Divider } from "@mui/material";
+import Person from "@mui/icons-material/Person";
 import ChatIcon from "@mui/icons-material/Chat";
 import { useState } from "react";
 import Users from "./Users";
 import UserChats from "./UserChats";
+import SettingsBar from "./SettingsBar";
+import React from "react";
 
 const ChatTabs = ({ onChatSelect }) => {
+  console.log("ChatTabs rendered");
   const [selection, setSelection] = useState("myChats");
 
   const handleChange = (event, newSelection) => {
@@ -24,13 +27,16 @@ const ChatTabs = ({ onChatSelect }) => {
           borderColor: "divider",
         }}
       >
-        <h3>User App Menu</h3>
+        <Box>
+          <SettingsBar />
+        </Box>
+        <Divider />
         <Tabs
           value={selection}
           onChange={handleChange}
           aria-label="icon label tabs example"
         >
-          <Tab value="newChat" icon={<AddCommentIcon />} label="NEW CHAT" />
+          <Tab value="newChat" icon={<Person />} label="ALL USERS" />
           <Tab value="myChats" icon={<ChatIcon />} label="MY CHATS" />
         </Tabs>
       </Container>
@@ -48,4 +54,4 @@ const ChatTabs = ({ onChatSelect }) => {
   );
 };
 
-export default ChatTabs;
+export default React.memo(ChatTabs);

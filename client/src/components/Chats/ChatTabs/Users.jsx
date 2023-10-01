@@ -1,3 +1,4 @@
+import React from "react";
 import axios from "axios";
 import { List, ListItem, Divider } from "@mui/material";
 import useFetch from "../../../hooks/useFetch";
@@ -7,7 +8,6 @@ import UserSkeleton from "./UserSkeleton";
 const Users = ({ onChatSelect }) => {
   const usersApiRoute = "http://localhost:3000/users";
   const { data: users, loading, error } = useFetch(usersApiRoute);
-  console.log("Users:", users);
 
   const handleUserSelection = async (userId) => {
     const { accessToken } = JSON.parse(sessionStorage.getItem("userInfo"));
@@ -23,7 +23,6 @@ const Users = ({ onChatSelect }) => {
           },
         }
       );
-      console.log(chat);
       onChatSelect(chat);
     } catch (error) {
       console.log(error);
@@ -44,17 +43,16 @@ const Users = ({ onChatSelect }) => {
     <List>
       {users.map((user) => {
         return (
-          <>
+          <React.Fragment key={user._id}>
             <ListItem
               button
-              key={user._id}
               sx={{ padding: 0, margin: 0 }}
               onClick={() => handleUserSelection(user._id)}
             >
-              <User key={user._id} user={user} />
+              <User user={user} />
             </ListItem>
             <Divider variant="fullwidth" component="li" />
-          </>
+          </React.Fragment>
         );
       })}
     </List>

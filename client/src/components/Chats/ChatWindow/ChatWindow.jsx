@@ -1,9 +1,10 @@
 // ChatWindow.jsx
 import MessagesArea from "./MessagesArea";
 import MessageInput from "./MessageInput";
-import { Box, AppBar, Toolbar } from "@mui/material";
+import { Box, AppBar, Toolbar, CircularProgress } from "@mui/material";
 import useFetch from "../../../hooks/useFetch";
 import { useEffect, useState, useRef } from "react";
+import ContactBar from "./ContactBar";
 
 import { io } from "socket.io-client";
 
@@ -64,11 +65,29 @@ const ChatWindow = ({ selectedChat }) => {
   });
 
   if (!selectedChat) {
-    return <h3>Select a Chat</h3>;
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh"
+      >
+        <h3>Select a chat to display</h3>
+      </Box>
+    );
   }
 
   if (loading) {
-    return <h3>Loading...</h3>;
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
@@ -80,9 +99,8 @@ const ChatWindow = ({ selectedChat }) => {
         width: "100%",
       }}
     >
-      <AppBar position="static">
-        <Toolbar>Chat Contact Bar</Toolbar>
-      </AppBar>
+      {/* Contact Bar */}
+      <ContactBar selectedChat={selectedChat} thisUser={thisUser} />
 
       {/* Messages Area */}
       <Box

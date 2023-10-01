@@ -15,7 +15,6 @@ const useSendMsg = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log("message:", sentMsg);
       setLoading(false);
       setError("");
       return sentMsg;

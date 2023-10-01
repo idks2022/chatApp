@@ -9,17 +9,15 @@ const MessageInput = ({ chatId, socket }) => {
   const { sendMessage, loading, error } = useSendMsg();
 
   const handleSubmit = async () => {
-    console.log("handlesubmit", message);
     const requestBody = {
       chatId: chatId,
       content: message,
     };
-    const newMessage = await sendMessage(requestBody);
+    await sendMessage(requestBody);
     if (error) {
       console.log(error);
       return;
     }
-
     setMessage("");
   };
 
