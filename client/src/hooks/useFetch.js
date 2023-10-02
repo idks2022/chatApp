@@ -19,13 +19,16 @@ const useFetch = (url) => {
         });
         setData(response.data);
         setLoading(false);
-        setError(null);
         console.log("useFetch:", response.data);
       } catch (error) {
-        setData(null);
-        setError(error.message);
+        if (error.response.status !== 404) {
+          setError(error.message);
+          setLoading(false);
+          console.log("API call failed:", error.message);
+        }
+        setData([]);
         setLoading(false);
-        console.log(error.message);
+        console.log("API call failed: no messages found");
       }
     };
 

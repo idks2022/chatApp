@@ -20,17 +20,31 @@ const ChatWindow = ({ selectedChat }) => {
 
   const socketRef = useRef(null);
 
+  //socket setup and cleanup
   useEffect(() => {
     if (!socketRef.current) {
       socketRef.current = io(ENDPOINT);
 
       //Listen to socket connection
       socketRef.current.on("connect", () => {
-        console.log("connected with socket id: ", socketRef.current.id);
+        console.log(
+          "Client has connected with socket ID:",
+          socketRef.current.id
+        );
       });
 
       //emit setup even
       socketRef.current.emit("setup", thisUser);
+
+      //listen to chat connected
+      socketRef.current.on("chat connected", (chatId) => {
+        console.log("Client has connected to chat ID:", chatId);
+      });
+
+      //cleanup function
+      /*    return () => {
+        socketRef.current.disconnect();
+      }; */
     }
   }, [thisUser]);
 
@@ -50,19 +64,20 @@ const ChatWindow = ({ selectedChat }) => {
 
       //listen for new message
       socketRef.current.on("message received", (newMessage) => {
-        console.log("message received: ", newMessage);
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        if (selectedChat._id !== newMessage.chat._id) {
+          //send notification about new message
+        } else {
+          console.log("message received: ", newMessage);
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+        }
       });
+
+      // Cleanup function to remove the listener
+      return () => {
+        socketRef.current.off("message received");
+      };
     }
   }, [selectedChat]);
-
-  useEffect(() => {
-    if (socketRef.current) {
-      socketRef.current.on("chat connected", (chatId) => {
-        console.log("chat connected: ", chatId);
-      });
-    }
-  });
 
   if (!selectedChat) {
     return (

@@ -8,15 +8,8 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path="/chats" element={<Chats />} />
         <Route path="/" element={<Homepage />} />
-        <Route
-          path="/chats"
-          element={
-            <AuthWrapper>
-              <Chats />
-            </AuthWrapper>
-          }
-        />
       </Routes>
     </>
   );

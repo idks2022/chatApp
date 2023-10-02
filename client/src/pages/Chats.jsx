@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, CssBaseline, Drawer, Fab } from "@mui/material";
 import ContactsIcon from "@mui/icons-material/Contacts";
 
@@ -8,9 +9,11 @@ import ChatWindow from "../components/Chats/ChatWindow/ChatWindow";
 const drawerWidth = 260;
 
 function Chats(props) {
+  const navigate = useNavigate();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(); //receives the selected chat object
+  const [hasCheckedSession, setHasCheckedSession] = useState(false);
 
   const handleSelectedChat = useCallback((chat) => {
     setSelectedChat(chat);
@@ -19,6 +22,19 @@ function Chats(props) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  useEffect(() => {
+    const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
+    if (!thisUser) {
+      navigate("/");
+      return;
+    }
+    setHasCheckedSession(true);
+  }, [navigate]);
+
+  if (!hasCheckedSession) {
+    return null; // or <LoadingComponent />
+  }
 
   const drawer = (
     <div>
