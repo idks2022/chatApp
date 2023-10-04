@@ -1,19 +1,19 @@
 import { Tabs, Tab, Container, Box, Divider } from "@mui/material";
 import Person from "@mui/icons-material/Person";
 import ChatIcon from "@mui/icons-material/Chat";
-import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-
-import React from "react";
 import Users from "./Users";
 import UserChats from "./UserChats";
 import SettingsBar from "./SettingsBar";
+import React from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addNotification } from "../../../redux/slices/notificationsSlice";
 import socket from "../../../socket/socketConfig";
 
 const ChatTabs = () => {
   console.log("ChatTabs rendered", socket);
   const dispatch = useDispatch();
-
+  const selectedChat = useSelector((state) => state.selectedChat.selectedChat);
   const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
   const [selection, setSelection] = useState("myChats");
 
@@ -21,6 +21,7 @@ const ChatTabs = () => {
   useEffect(() => {
     if (!socket.connected) {
       console.log("socket setup");
+      socket.connect();
 
       //Listen to socket connection
       socket.on("connect", () => {
@@ -34,6 +35,18 @@ const ChatTabs = () => {
       socket.on("chat connected", (chatId) => {
         console.log("Client has connected to chat ID:", chatId);
       });
+
+      //listen for incoming messages
+      socket.on("message received", (newMessage) => {
+        if (selectedChat._id === newMessage.chat._id) {
+          dispatch(addMessage(newMessage));
+        } else {
+          dispatch(addNotification(newMessage.chat._id));
+        }
+      });
+      return () => {
+        socket.off("message received");
+      };
     }
   }, [thisUser]);
 
@@ -42,9 +55,7 @@ const ChatTabs = () => {
   };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
+    <Box>
       {/* User App Menu */}
       <Container
         sx={{
@@ -68,7 +79,12 @@ const ChatTabs = () => {
       </Container>
 
       {/* Chats / Users Tabs */}
-      <Container sx={{ width: "100%", justifyContent: "space-between" }}>
+      <Container
+        sx={{
+          width: "100%",
+          justifyContent: "space-between",
+        }}
+      >
         <div style={{ display: selection === "myChats" ? "block" : "none" }}>
           <UserChats />
         </div>
@@ -76,7 +92,7 @@ const ChatTabs = () => {
           <Users />
         </div>
       </Container>
-    </div>
+    </Box>
   );
 };
 

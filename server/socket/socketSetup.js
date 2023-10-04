@@ -1,5 +1,6 @@
 module.exports = function setupSocket(io) {
   const socketToRoomMapping = {};
+  const userSocketMapping = new Map();
   const usersSetup = new Set();
 
   io.on("connection", (socket) => {
@@ -10,9 +11,10 @@ module.exports = function setupSocket(io) {
         return;
       }
 
-      console.log("Setup event received for user ID:", userData._id);
       socket.join(userData._id);
+      console.log("Setup user's own socket:", userData._id);
       usersSetup.add(userData._id);
+      userSocketMapping.set(socket.id, userData._id);
       socket.emit("connected");
     });
 
@@ -37,7 +39,9 @@ module.exports = function setupSocket(io) {
 
     socket.on("disconnect", () => {
       console.log("A user disconnected");
-      // Optionally leave any rooms or perform other cleanup tasks here
+      const userId = userSocketMapping.get(socket.id);
+      usersSetup.delete(userId);
+      userSocketMapping.delete(socket.id);
     });
   });
 };

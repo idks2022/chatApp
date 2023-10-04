@@ -30,11 +30,7 @@ function Chats(props) {
     return null;
   }
 
-  const drawer = (
-    <div>
-      <ChatTabs />
-    </div>
-  );
+  const drawer = <ChatTabs />;
 
   const container =
     window !== undefined ? () => window().document.body : undefined;

@@ -11,8 +11,8 @@ const UserChat = ({ chat, otherUser }) => {
         secondary={chat.latestMessage?.content || "no messages yet"}
         sx={{
           overflow: "hidden",
-
           whiteSpace: "nowrap",
+          width: "100%",
         }}
       />
     </ListItem>

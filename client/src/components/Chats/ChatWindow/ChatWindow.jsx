@@ -10,6 +10,8 @@ import {
   updateMessages,
   addMessage,
 } from "../../../redux/slices/messagesSlice";
+import { deleteNotification } from "../../../redux/slices/notificationsSlice";
+import { addNotification } from "../../../redux/slices/notificationsSlice";
 import socket from "../../../socket/socketConfig";
 
 const ChatWindow = () => {
@@ -33,23 +35,14 @@ const ChatWindow = () => {
 
   useEffect(() => {
     if (selectedChat && selectedChat._id) {
-      console.log("selectedChat: ", selectedChat);
       const getMessagesApiRoute = `http://localhost:3000/messages/${selectedChat._id}`;
       setUrl(getMessagesApiRoute); //activate useFetch
 
+      //delete notification
+      dispatch(deleteNotification(selectedChat._id));
+
       // Join chat
       socket.emit("join chat", selectedChat._id);
-      //listen for incoming messages
-      socket.on("message received", (newMessage) => {
-        if (selectedChat._id === newMessage.chat._id) {
-          dispatch(addMessage(newMessage));
-        } else {
-          //send notification about new message
-        }
-      });
-      return () => {
-        socket.off("message received");
-      };
     }
   }, [selectedChat]);
 

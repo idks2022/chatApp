@@ -45,8 +45,14 @@ const createMessage = async (req, res) => {
     if (!chat || !chat.users)
       return res.status(400).json({ message: "Chat / chat.users not found" });
 
-    // Emit the new message to the chat's room
-    req.app.io.to(chatId).emit("message received", newMessage);
+    /* // Emit the new message to the chat's room
+    req.app.io.to(chatId).emit("message received", newMessage); */
+
+    // Emit the new message to each user inside the chat
+    for (let userId of chat.users) {
+      console.log("emitting message to user", userId._id.toString());
+      req.app.io.to(userId._id.toString()).emit("message received", newMessage);
+    }
 
     return res.status(201).json(newMessage);
   } catch (error) {
