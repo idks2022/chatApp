@@ -4,7 +4,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { useState } from "react";
 import useSendMsg from "../../../hooks/useSendMsg";
 
-const MessageInput = ({ chatId, socket }) => {
+const MessageInput = ({ chatId }) => {
   const [message, setMessage] = useState("");
   const { sendMessage, loading, error } = useSendMsg();
 
@@ -13,6 +13,7 @@ const MessageInput = ({ chatId, socket }) => {
       chatId: chatId,
       content: message,
     };
+
     await sendMessage(requestBody);
     if (error) {
       console.log(error);

@@ -5,53 +5,29 @@ import { Box, CircularProgress } from "@mui/material";
 import ContactBar from "./ContactBar";
 import useFetch from "../../../hooks/useFetch";
 import { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
-
-import { io } from "socket.io-client";
-const ENDPOINT = "http://localhost:3000";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  updateMessages,
+  addMessage,
+} from "../../../redux/slices/messagesSlice";
+import socket from "../../../socket/socketConfig";
 
 const ChatWindow = () => {
-  const selectedChat = useSelector((state) => state.selectedChat.selectedChat);
-  const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
+  const dispatch = useDispatch();
 
-  const [messages, setMessages] = useState(null); //gets value from useFetch
+  const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
+  const selectedChat = useSelector((state) => state.selectedChat.selectedChat);
+  //const [messages, setMessages] = useState([]); - moved to redux
+  const messages = useSelector((state) => state.messages.messages);
+
   const [url, setUrl] = useState(null); //gets value from useEffect
 
   let { data, loading, error } = useFetch(url);
 
-  const socketRef = useRef(null);
-
-  //socket setup and cleanup
-  useEffect(() => {
-    if (!socketRef.current) {
-      socketRef.current = io(ENDPOINT);
-
-      //Listen to socket connection
-      socketRef.current.on("connect", () => {
-        console.log(
-          "Client has connected with socket ID:",
-          socketRef.current.id
-        );
-      });
-
-      //emit setup even
-      socketRef.current.emit("setup", thisUser);
-
-      //listen to chat connected
-      socketRef.current.on("chat connected", (chatId) => {
-        console.log("Client has connected to chat ID:", chatId);
-      });
-
-      //cleanup function
-      /*    return () => {
-        socketRef.current.disconnect();
-      }; */
-    }
-  }, [thisUser]);
-
   useEffect(() => {
     if (data) {
-      setMessages(data);
+      //setMessages(data);
+      dispatch(updateMessages(data));
     }
   }, [data]);
 
@@ -61,22 +37,18 @@ const ChatWindow = () => {
       const getMessagesApiRoute = `http://localhost:3000/messages/${selectedChat._id}`;
       setUrl(getMessagesApiRoute); //activate useFetch
 
-      //join chat
-      socketRef.current.emit("join chat", selectedChat._id);
-
-      //listen for new message
-      socketRef.current.on("message received", (newMessage) => {
-        if (selectedChat._id !== newMessage.chat._id) {
-          //send notification about new message
+      // Join chat
+      socket.emit("join chat", selectedChat._id);
+      //listen for incoming messages
+      socket.on("message received", (newMessage) => {
+        if (selectedChat._id === newMessage.chat._id) {
+          dispatch(addMessage(newMessage));
         } else {
-          console.log("message received: ", newMessage);
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
+          //send notification about new message
         }
       });
-
-      // Cleanup function to remove the listener
       return () => {
-        socketRef.current.off("message received");
+        socket.off("message received");
       };
     }
   }, [selectedChat]);

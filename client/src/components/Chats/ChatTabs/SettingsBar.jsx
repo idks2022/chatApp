@@ -8,7 +8,9 @@ import {
   TextField,
   Button,
   Avatar,
+  Badge,
 } from "@mui/material";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 
@@ -40,8 +42,8 @@ const userApiRoute = "http://localhost:3000/users/";
 const SettingsBar = () => {
   const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
   const [openSettings, setOpenSettings] = useState(false);
-  const [updatedName, setUpdatedName] = useState(null);
-  const [updatedPic, setUpdatedPic] = useState(null);
+  const [updatedName, setUpdatedName] = useState(thisUser.name || "");
+  const [updatedPic, setUpdatedPic] = useState(thisUser.pic || "");
 
   const handleOpen = () => setOpenSettings(true);
   const handleClose = () => setOpenSettings(false);
@@ -84,11 +86,16 @@ const SettingsBar = () => {
 
   return (
     <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+      <IconButton onClick={handleLogOut}>
+        <LogoutIcon />
+      </IconButton>
       <IconButton onClick={handleOpen}>
         <SettingsIcon />
       </IconButton>
-      <IconButton onClick={handleLogOut}>
-        <LogoutIcon />
+      <IconButton>
+        <Badge badgeContent={2} color="error">
+          <NotificationsNoneIcon />
+        </Badge>
       </IconButton>
 
       <Modal

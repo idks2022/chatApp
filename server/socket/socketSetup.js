@@ -1,12 +1,18 @@
 module.exports = function setupSocket(io) {
   const socketToRoomMapping = {};
+  const usersSetup = new Set();
 
   io.on("connection", (socket) => {
     console.log("New client has connected with socket ID:", socket.id);
 
     socket.on("setup", (userData) => {
+      if (usersSetup.has(userData._id)) {
+        return;
+      }
+
       console.log("Setup event received for user ID:", userData._id);
       socket.join(userData._id);
+      usersSetup.add(userData._id);
       socket.emit("connected");
     });
 

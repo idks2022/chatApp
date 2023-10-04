@@ -1,19 +1,41 @@
 import { Tabs, Tab, Container, Box, Divider } from "@mui/material";
 import Person from "@mui/icons-material/Person";
 import ChatIcon from "@mui/icons-material/Chat";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+
 import React from "react";
 import Users from "./Users";
 import UserChats from "./UserChats";
 import SettingsBar from "./SettingsBar";
-
-import { io } from "socket.io-client";
-const ENDPOINT = "http://localhost:3000";
+import socket from "../../../socket/socketConfig";
 
 const ChatTabs = () => {
-  console.log("ChatTabs rendered");
+  console.log("ChatTabs rendered", socket);
+  const dispatch = useDispatch();
+
   const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
   const [selection, setSelection] = useState("myChats");
+
+  //socket setup and cleanup
+  useEffect(() => {
+    if (!socket.connected) {
+      console.log("socket setup");
+
+      //Listen to socket connection
+      socket.on("connect", () => {
+        console.log("Client has connected with socket ID:", socket.id);
+      });
+
+      //emit setup even
+      socket.emit("setup", thisUser);
+
+      //listen to chat connected
+      socket.on("chat connected", (chatId) => {
+        console.log("Client has connected to chat ID:", chatId);
+      });
+    }
+  }, [thisUser]);
 
   const handleChange = (event, newSelection) => {
     setSelection(newSelection);

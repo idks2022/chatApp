@@ -1,18 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, CssBaseline, Drawer, Fab } from "@mui/material";
 import ContactsIcon from "@mui/icons-material/Contacts";
-
 import ChatTabs from "../components/Chats/ChatTabs/ChatTabs";
 import ChatWindow from "../components/Chats/ChatWindow/ChatWindow";
 
 const drawerWidth = 260;
 
 function Chats(props) {
+  const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
   const navigate = useNavigate();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-  //const [selectedChat, setSelectedChat] = useState(); //receives the selected chat object - replaced by redux
   const [hasCheckedSession, setHasCheckedSession] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -20,7 +19,6 @@ function Chats(props) {
   };
 
   useEffect(() => {
-    const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
     if (!thisUser) {
       navigate("/");
       return;
@@ -29,7 +27,7 @@ function Chats(props) {
   }, [navigate]);
 
   if (!hasCheckedSession) {
-    return null; // or <LoadingComponent />
+    return null;
   }
 
   const drawer = (
@@ -57,7 +55,7 @@ function Chats(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             display: { xs: "block", sm: "none" },
