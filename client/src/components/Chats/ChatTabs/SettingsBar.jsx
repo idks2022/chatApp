@@ -38,10 +38,10 @@ const avatars = [
 const userApiRoute = "http://localhost:3000/users/";
 
 const SettingsBar = () => {
-  const thisUser = JSON.parse(localStorage.getItem("userInfo"));
+  const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
   const [openSettings, setOpenSettings] = useState(false);
-  const [updatedName, setUpdatedName] = useState(thisUser?.name || null);
-  const [updatedPic, setUpdatedPic] = useState("");
+  const [updatedName, setUpdatedName] = useState(null);
+  const [updatedPic, setUpdatedPic] = useState(null);
 
   const handleOpen = () => setOpenSettings(true);
   const handleClose = () => setOpenSettings(false);
@@ -53,10 +53,10 @@ const SettingsBar = () => {
     event.preventDefault();
     const { accessToken } = JSON.parse(sessionStorage.getItem("userInfo"));
     const updatedUser = {
-      id: thisUser?._id,
+      id: thisUser._id,
       changes: {
-        name: updatedName,
-        pic: updatedPic,
+        name: updatedName ? updatedName : thisUser.name,
+        pic: updatedPic ? updatedPic : thisUser.pic,
       },
     };
 
@@ -80,6 +80,8 @@ const SettingsBar = () => {
     window.location.href = "/";
   };
 
+  if (!thisUser) return;
+
   return (
     <Box sx={{ display: "flex", justifyContent: "space-around" }}>
       <IconButton onClick={handleOpen}>
@@ -97,15 +99,15 @@ const SettingsBar = () => {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Update User {thisUser?.email}
+            Update User {thisUser.email}
           </Typography>
           <form onSubmit={handleSubmit}>
             <Box
               sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}
             >
               <Avatar
-                alt={thisUser?.name}
-                src={updatedPic || thisUser?.pic}
+                alt={thisUser.name}
+                src={thisUser.pic}
                 sx={{ width: 60, height: 60, marginRight: 1 }}
               />
               <TextField

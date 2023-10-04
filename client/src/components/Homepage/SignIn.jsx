@@ -16,7 +16,6 @@ const SignIn = () => {
 
   const onSubmit = async (data) => {
     const jsonData = JSON.stringify(data);
-    console.log(jsonData);
 
     try {
       const { data } = await axios.post(

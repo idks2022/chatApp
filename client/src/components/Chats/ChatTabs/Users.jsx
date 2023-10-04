@@ -1,11 +1,14 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { updateSelectedChat } from "../../../redux/slices/selectedChatSlice";
 import axios from "axios";
 import { List, ListItem, Divider } from "@mui/material";
 import useFetch from "../../../hooks/useFetch";
 import User from "./User";
 import UserSkeleton from "./UserSkeleton";
 
-const Users = ({ onChatSelect }) => {
+const Users = () => {
+  const dispatch = useDispatch();
   const usersApiRoute = "http://localhost:3000/users";
   const { data: users, loading, error } = useFetch(usersApiRoute);
 
@@ -23,7 +26,7 @@ const Users = ({ onChatSelect }) => {
           },
         }
       );
-      onChatSelect(chat);
+      dispatch(updateSelectedChat(chat));
     } catch (error) {
       console.log(error);
     }

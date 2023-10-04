@@ -1,16 +1,17 @@
 // ChatWindow.jsx
 import MessagesArea from "./MessagesArea";
 import MessageInput from "./MessageInput";
-import { Box, AppBar, Toolbar, CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
+import ContactBar from "./ContactBar";
 import useFetch from "../../../hooks/useFetch";
 import { useEffect, useState, useRef } from "react";
-import ContactBar from "./ContactBar";
+import { useSelector } from "react-redux";
 
 import { io } from "socket.io-client";
-
 const ENDPOINT = "http://localhost:3000";
 
-const ChatWindow = ({ selectedChat }) => {
+const ChatWindow = () => {
+  const selectedChat = useSelector((state) => state.selectedChat.selectedChat);
   const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
 
   const [messages, setMessages] = useState(null); //gets value from useFetch
@@ -55,7 +56,8 @@ const ChatWindow = ({ selectedChat }) => {
   }, [data]);
 
   useEffect(() => {
-    if (selectedChat) {
+    if (selectedChat && selectedChat._id) {
+      console.log("selectedChat: ", selectedChat);
       const getMessagesApiRoute = `http://localhost:3000/messages/${selectedChat._id}`;
       setUrl(getMessagesApiRoute); //activate useFetch
 
@@ -79,7 +81,7 @@ const ChatWindow = ({ selectedChat }) => {
     }
   }, [selectedChat]);
 
-  if (!selectedChat) {
+  if (!selectedChat || !selectedChat.users) {
     return (
       <Box
         display="flex"

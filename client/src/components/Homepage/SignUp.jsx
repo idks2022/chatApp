@@ -15,7 +15,6 @@ const SignUp = () => {
 
   const onSubmit = async (data) => {
     const jsonData = JSON.stringify(data);
-    console.log(jsonData);
 
     try {
       const result = await axios.post("http://localhost:3000/users", jsonData, {

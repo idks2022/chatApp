@@ -12,12 +12,8 @@ function Chats(props) {
   const navigate = useNavigate();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(); //receives the selected chat object
+  //const [selectedChat, setSelectedChat] = useState(); //receives the selected chat object - replaced by redux
   const [hasCheckedSession, setHasCheckedSession] = useState(false);
-
-  const handleSelectedChat = useCallback((chat) => {
-    setSelectedChat(chat);
-  }, []);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -38,10 +34,7 @@ function Chats(props) {
 
   const drawer = (
     <div>
-      <ChatTabs
-        selectedChatId={selectedChat}
-        onChatSelect={handleSelectedChat}
-      />
+      <ChatTabs />
     </div>
   );
 
@@ -101,7 +94,7 @@ function Chats(props) {
           overflow: "hidden", // to ensure it's non-scrollable
         }}
       >
-        <ChatWindow selectedChat={selectedChat} />
+        <ChatWindow />
 
         <Fab
           color="primary"
@@ -117,9 +110,6 @@ function Chats(props) {
           <ContactsIcon />
         </Fab>
       </Box>
-      {/*       <Box>
-        <h1>dslmdlsmdlsmdlsmdlsmds</h1>
-      </Box> */}
     </Box>
   );
 }
