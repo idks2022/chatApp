@@ -3,29 +3,35 @@ import { createSlice } from "@reduxjs/toolkit";
 const notificationsSlice = createSlice({
   name: "notifications",
   initialState: {
-    notifications: [], // Each element: { chatId: 'someId', unreadCount: 5 }
+    notifications: [], // Each document: { userId: 'the recieving user', chatId: 'someId', unreadCount: 5, latestMessage: 'someMessage'  }
   },
   reducers: {
-    updateNotifications: (state, action) => {
-      state.notifications = action.payload;
-    },
     addNotification: (state, action) => {
-      const chatId = action.payload;
+      const { newMessage, userId } = action.payload;
+      const chatId = newMessage.chat._id;
       const existingNotification = state.notifications.find(
-        (n) => n.chatId === chatId
+        (n) => n.chatId === chatId && n.userId === userId
       );
 
       if (existingNotification) {
-        // If the chatId already exists, increment its unread count
+        // If the userId and chatId combination already exists, increment its unread count and update the latest message
         existingNotification.unreadCount += 1;
+        existingNotification.latestMessage = newMessage.content;
       } else {
         // If not, add a new notification for that chatId with unreadCount as 1
-        state.notifications.push({ chatId, unreadCount: 1 });
+        state.notifications.push({
+          userId,
+          chatId,
+          unreadCount: 1,
+          latestMessage: newMessage.content,
+        });
       }
     },
     deleteNotification: (state, action) => {
-      const chatId = action.payload;
-      const index = state.notifications.findIndex((n) => n.chatId === chatId);
+      const { userId, chatId } = action.payload;
+      const index = state.notifications.findIndex(
+        (n) => n.chatId === chatId && n.userId === userId
+      );
 
       if (index !== -1) {
         state.notifications.splice(index, 1);
@@ -37,10 +43,6 @@ const notificationsSlice = createSlice({
   },
 });
 
-export const {
-  updateNotifications,
-  addNotification,
-  deleteNotification,
-  resetNotifications,
-} = notificationsSlice.actions;
+export const { addNotification, deleteNotification, resetNotifications } =
+  notificationsSlice.actions;
 export default notificationsSlice.reducer;

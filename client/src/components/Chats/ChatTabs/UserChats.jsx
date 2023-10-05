@@ -37,9 +37,12 @@ const UserChats = () => {
       {userChats.map((chat) => {
         const otherUser = chat.users.find((user) => user._id !== thisUser._id);
         const chatNotification = notifications.find(
-          (n) => n.chatId === chat._id
+          (n) => n.chatId === chat._id && n.userId === thisUser._id
         );
         const unreadCount = chatNotification ? chatNotification.unreadCount : 0;
+        const latestMessage = chatNotification
+          ? chatNotification.latestMessage
+          : 0;
         return (
           <React.Fragment key={chat._id}>
             <ListItem
@@ -56,7 +59,11 @@ const UserChats = () => {
                 }}
                 sx={{ width: "100%" }}
               >
-                <UserChat chat={chat} otherUser={otherUser} />
+                <UserChat
+                  chat={chat}
+                  otherUser={otherUser}
+                  latestMessageProp={latestMessage}
+                />
               </Badge>
             </ListItem>
             <Divider variant="startContent" component="li" />

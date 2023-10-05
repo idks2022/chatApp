@@ -12,16 +12,13 @@ const MessagesArea = ({ messages, thisUser }) => {
   }, [messages]);
 
   return (
-    console.log("MessagesArea rendered", messages),
-    (
-      <Box sx={{ width: "100%" }}>
-        {messages &&
-          messages.map((message, index) => (
-            <Message key={index} message={message} thisUser={thisUser} />
-          ))}
-        <div ref={messagesEndRef} />
-      </Box>
-    )
+    <Box sx={{ width: "100%" }}>
+      {messages &&
+        messages.map((message, index) => (
+          <Message key={index} message={message} thisUser={thisUser} />
+        ))}
+      <div ref={messagesEndRef} />
+    </Box>
   );
 };
 

@@ -12,7 +12,6 @@ import { addMessage } from "../../../redux/slices/messagesSlice";
 import socket from "../../../socket/socketConfig";
 
 const ChatTabs = () => {
-  console.log("ChatTabs rendered", socket);
   const dispatch = useDispatch();
   const selectedChat = useSelector((state) => state.selectedChat.selectedChat);
   const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
@@ -41,10 +40,11 @@ const ChatTabs = () => {
       socket.on("message received", (newMessage) => {
         console.log("message received", newMessage);
         if (selectedChat._id === newMessage.chat._id) {
-          console.log("message received in selected chat");
           dispatch(addMessage(newMessage));
         } else {
-          dispatch(addNotification(newMessage.chat._id));
+          dispatch(
+            addNotification({ newMessage: newMessage, userId: thisUser._id })
+          );
         }
       });
       return () => {
@@ -52,7 +52,7 @@ const ChatTabs = () => {
       };
     }
   }, [thisUser]);
-
+  //on change of selected chat, listen for incoming messages
   useEffect(() => {
     if (selectedChat && selectedChat._id) {
       //clear any existing listeners
@@ -61,15 +61,13 @@ const ChatTabs = () => {
       socket.on("message received", (newMessage) => {
         console.log("message received", newMessage);
         if (selectedChat._id === newMessage.chat._id) {
-          console.log("message received in selected chat");
           dispatch(addMessage(newMessage));
         } else {
-          dispatch(addNotification(newMessage.chat._id));
+          dispatch(
+            addNotification({ newMessage: newMessage, userId: thisUser._id })
+          );
         }
       });
-      /* return () => {
-        socket.off("message received");
-      }; */
     }
   }, [selectedChat]);
 

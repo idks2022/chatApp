@@ -21,7 +21,6 @@ const ChatWindow = () => {
   const selectedChat = useSelector((state) => state.selectedChat.selectedChat);
   //const [messages, setMessages] = useState([]);
   const messages = useSelector((state) => state.messages.messages);
-  console.log("messages", messages);
 
   const [url, setUrl] = useState(null); //gets value from useEffect
 
@@ -40,7 +39,9 @@ const ChatWindow = () => {
       setUrl(getMessagesApiRoute); //activate useFetch
 
       //delete notification
-      dispatch(deleteNotification(selectedChat._id));
+      dispatch(
+        deleteNotification({ userId: thisUser._id, chatId: selectedChat._id })
+      );
 
       // Join chat
       socket.emit("join chat", selectedChat._id);
