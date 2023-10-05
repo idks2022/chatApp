@@ -19,8 +19,9 @@ const ChatWindow = () => {
 
   const thisUser = JSON.parse(sessionStorage.getItem("userInfo"));
   const selectedChat = useSelector((state) => state.selectedChat.selectedChat);
-  //const [messages, setMessages] = useState([]); - moved to redux
+  //const [messages, setMessages] = useState([]);
   const messages = useSelector((state) => state.messages.messages);
+  console.log("messages", messages);
 
   const [url, setUrl] = useState(null); //gets value from useEffect
 

@@ -114,7 +114,7 @@ const SettingsBar = () => {
             >
               <Avatar
                 alt={thisUser.name}
-                src={thisUser.pic}
+                src={updatedPic}
                 sx={{ width: 60, height: 60, marginRight: 1 }}
               />
               <TextField

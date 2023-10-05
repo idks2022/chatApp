@@ -8,6 +8,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNotification } from "../../../redux/slices/notificationsSlice";
+import { addMessage } from "../../../redux/slices/messagesSlice";
 import socket from "../../../socket/socketConfig";
 
 const ChatTabs = () => {
@@ -38,7 +39,9 @@ const ChatTabs = () => {
 
       //listen for incoming messages
       socket.on("message received", (newMessage) => {
+        console.log("message received", newMessage);
         if (selectedChat._id === newMessage.chat._id) {
+          console.log("message received in selected chat");
           dispatch(addMessage(newMessage));
         } else {
           dispatch(addNotification(newMessage.chat._id));
@@ -49,6 +52,26 @@ const ChatTabs = () => {
       };
     }
   }, [thisUser]);
+
+  useEffect(() => {
+    if (selectedChat && selectedChat._id) {
+      //clear any existing listeners
+      socket.off("message received");
+      //listen for incoming messages
+      socket.on("message received", (newMessage) => {
+        console.log("message received", newMessage);
+        if (selectedChat._id === newMessage.chat._id) {
+          console.log("message received in selected chat");
+          dispatch(addMessage(newMessage));
+        } else {
+          dispatch(addNotification(newMessage.chat._id));
+        }
+      });
+      /* return () => {
+        socket.off("message received");
+      }; */
+    }
+  }, [selectedChat]);
 
   const handleChange = (event, newSelection) => {
     setSelection(newSelection);
